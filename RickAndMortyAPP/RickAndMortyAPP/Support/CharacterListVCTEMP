@@ -25,7 +25,7 @@ class CharacterListVC: RMDataLoadingVC {
     
     var collectionView: UICollectionView!
     var dataSource: UICollectionViewDiffableDataSource<Section, RMCharacter>!
-    let favoritesVC = FavoritesVC()
+    
     
     
     
@@ -124,6 +124,7 @@ class CharacterListVC: RMDataLoadingVC {
         }
     }
     
+    
 }
 
 extension CharacterListVC: UICollectionViewDelegate {
@@ -169,23 +170,6 @@ extension CharacterListVC: UICollectionViewDelegate {
         }
     }
     
-    func removeCharacterFromFavorites(character: RMCharacter) {
-        let favorite = RMFavoriteCharacter(name: character.name, avatarURL: character.image, id: character.id)
-        PersistenceManager.updateWith(favorite: favorite, actionType: .remove) { [weak self] error in
-            guard let self else { return }
-            
-            guard let error else {
-                DispatchQueue.main.async {
-                    self.presentRMAlert(title: "Success!", message: "Deleted from favorites \(character.name)", buttonTitle: "Ok")
-                }
-                return
-            }
-            DispatchQueue.main.async {
-                self.presentRMAlert(title: "Something went wrong...", message: error.rawValue, buttonTitle: "Ok")
-            }
-        }
-    }
-    
     // MARK: -  Check this out later
     func setupFavoritesVCDelegate() {
         guard let tabBarController = self.tabBarController else { return }
@@ -222,19 +206,26 @@ extension CharacterListVC: CharacterCellDelegate {
     
     func didTapFavoriteButton(for character: RMCharacter) {
         showLoadingView()
-        Task  {
-            defer { dismissLoadingView() }
+        Task {
+            defer {dismissLoadingView()}
             do {
-                let character = try await NetworkManager.shared.getCharacterDetail(for: character.id)
-                
                 if PersistenceManager.isFavorite(character: character) {
-                    removeCharacterFromFavorites(character: character)
-                    self.updateSnapshot(for: character)
-                  
+                    PersistenceManager.updateWith(favorite: RMFavoriteCharacter(name: character.name, avatarURL: character.image, id: character.id), actionType: .remove) { error in
+                        if let error {
+                            self.presentRMAlert(title: "Something went wrong...", message: error.rawValue, buttonTitle: "Ok")
+                        } else {
+                            self.updateSnapshot(for: character)
+                        }
+                    }
                 } else {
-                    addCharacterToFavorites(character: character)
+                    self.addCharacterToFavorites(character: character)
                     self.updateSnapshot(for: character)
-                    
+                }
+            } catch {
+                if let rmError = error as? RMError {
+                    presentRMAlert(title: "Something went wrong...", message: rmError.rawValue, buttonTitle: "Ok")
+                } else {
+                    presentDefaultError()
                 }
             }
         }
@@ -250,6 +241,5 @@ extension CharacterListVC: FavoritesVCDelegate {
     
     
 }
-
 
 

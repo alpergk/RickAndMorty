@@ -26,6 +26,9 @@ class FavoritesVC: RMDataLoadingVC {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         getFavorites()
+        if favorites.isEmpty {
+               showEmptyStateView(with: "No Favorites?\nAdd some by tapping the heart icon on any character!", in: self.view)
+           }
     }
     
     

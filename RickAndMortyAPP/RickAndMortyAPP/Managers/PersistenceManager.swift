@@ -12,7 +12,7 @@ enum PersistenceActionType {
 }
 
 enum PersistenceManager {
-    static private let defaults = UserDefaults.standard //User Default Instance
+    static private let defaults = UserDefaults.standard
     enum Keys { static let favorites = "favorites"}
     
     static func retrieveFavorites(completed : @escaping (Result<[RMFavoriteCharacter], RMError>) -> Void) {
@@ -42,8 +42,6 @@ enum PersistenceManager {
         }
     }
     
-
-    
     static func updateWith(favorite: RMFavoriteCharacter, actionType: PersistenceActionType, completed: @escaping (RMError?) -> Void) {
         retrieveFavorites { result in
             switch result {
@@ -58,6 +56,7 @@ enum PersistenceManager {
                     
                 case .remove:
                     favorites.removeAll { $0.id == favorite.id }
+                  
                 }
                 completed(save(favorites: favorites))
                 
@@ -67,6 +66,10 @@ enum PersistenceManager {
             
         }
     }
+    
+  
+    
+    
     
     
     static func isFavorite(character: RMCharacter) -> Bool {

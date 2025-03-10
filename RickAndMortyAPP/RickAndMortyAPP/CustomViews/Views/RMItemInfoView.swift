@@ -52,20 +52,6 @@ class RMItemInfoView: UIView {
     }
     
     
-    private func convertToDate(from dateString: String) -> Date? {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSX"
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = TimeZone(abbreviation: "UTC")
-        
-        return formatter.date(from: dateString)
-    }
-    
-    
-    private func formatDateToMonthYear(_ date: Date) -> String {
-        return date.formatted(.dateTime.month().year())
-    }
-    
     
     func set(itemInfoType: ItemInfoType, withValue value: Any) {
         switch itemInfoType {

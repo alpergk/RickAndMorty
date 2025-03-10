@@ -76,6 +76,7 @@ class CharacterCell: UICollectionViewCell {
     
     @objc func favoriteButtonTapped() {
         guard let character = character else  { return }
+
         delegate?.didTapFavoriteButton(for: character)
         
     }

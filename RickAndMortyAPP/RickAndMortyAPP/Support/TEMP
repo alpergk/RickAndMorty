@@ -1,0 +1,44 @@
+
+    static func updateWith(favorite: RMFavoriteCharacter, actionType: PersistenceActionType, completed: @escaping (RMError?) -> Void) {
+        retrieveFavorites { result in
+            switch result {
+            case .success(var favorites):
+                switch actionType {
+                case .add:
+                    guard !favorites.contains(favorite) else {
+                        completed(.alreadyInFavorites)
+                        return
+                    }
+                    favorites.append(favorite)
+                    
+                case .remove:
+                    favorites.removeAll { $0.id == favorite.id }
+                }
+                completed(save(favorites: favorites))
+                
+            case .failure(let error):
+                completed(error)
+            }
+            
+        }
+    }
+    
+    
+            //        showLoadingView()
+        //        Task {
+        //            defer {dismissLoadingView()}
+        //            do {
+        //                let character = try await NetworkManager.shared.getCharacterDetail(for: character.id)
+        //                addCharacterToFavorites(character: character)
+        //                updateSnapshot(for: character)
+        //            } catch {
+        //                if let rmError = error as? RMError {
+        //                    presentRMAlert(title: "Something went wrong...", message: rmError.rawValue, buttonTitle: "Ok")
+        //                } else {
+        //                    presentDefaultError()
+        //                }
+        //            }
+        //        }
+        //    }
+        
+        
