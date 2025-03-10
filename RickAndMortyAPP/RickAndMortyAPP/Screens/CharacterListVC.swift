@@ -186,7 +186,8 @@ extension CharacterListVC: UICollectionViewDelegate {
         }
     }
     
-    // MARK: -  Check this out later
+    // TODO: - Check this out later
+
     func setupFavoritesVCDelegate() {
         guard let tabBarController = self.tabBarController else { return }
         // Find FavoritesVC in the tab bar controller's view controllers
@@ -220,6 +221,8 @@ extension CharacterListVC: UISearchResultsUpdating {
 
 extension CharacterListVC: CharacterCellDelegate {
     
+    // TODO: - Doesn't reload tableView after delete, it doesn't properly show emptyStateView on the tableView
+
     func didTapFavoriteButton(for character: RMCharacter) {
         showLoadingView()
         Task  {
@@ -234,7 +237,6 @@ extension CharacterListVC: CharacterCellDelegate {
                 } else {
                     addCharacterToFavorites(character: character)
                     self.updateSnapshot(for: character)
-                    
                 }
             }
         }
