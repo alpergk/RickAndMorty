@@ -89,6 +89,7 @@ class CharacterDetailVC: RMDataLoadingVC {
         Task {
             do {
                 let character  = try await NetworkManager.shared.getCharacterDetail(for: id)
+        
                 configureUIElement(with: character)
             } catch {
                 if let rmError = error as? RMError {
